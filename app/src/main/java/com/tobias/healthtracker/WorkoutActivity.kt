@@ -38,7 +38,6 @@ class WorkoutActivity : ComponentActivity() {
     lateinit var UserDataGoals: UserWorkoutGoals
     lateinit var AllDrunken: List<UserWorkouts>
     var workoutPercentage by Delegates.notNull<Float>()
-    var allKal by Delegates.notNull<Double>()
 
 
     private lateinit var dbHelper: UserDataDBHelper
@@ -59,7 +58,7 @@ class WorkoutActivity : ComponentActivity() {
     private fun getWorkoutData() {
         //Get Kalorien
         UserDataGoals = UserWorkoutGoals(dbHelper.getDataById(7)?.toDouble() ?: 1.0, dbHelper.getDataById(8)?.toDouble() ?: 0.0)
-        workoutPercentage = (UserDataGoals.workoutUser / UserDataGoals.workoutUser).toFloat()
+        workoutPercentage = (UserDataGoals.workoutUser / UserDataGoals.workoutGoal).toFloat()
 
         //get Food:
         AllDrunken = dbHelper.getAllWorkoutData()
@@ -102,7 +101,7 @@ class WorkoutActivity : ComponentActivity() {
                 ) {
                     ProgressCircle(
                         percentage = workoutPercentage,
-                        number = UserDataGoals.workoutGoal,
+                        number = UserDataGoals.workoutUser,
                         color = "#FF1AA7EC".color,
                         colorTrans = "#801AA7EC".color,
                         radius = 85.dp,
@@ -178,7 +177,7 @@ fun WorkoutItem(id: Int, time: String) {
         Modifier
             .padding(bottom = 5.dp)
             .fillMaxWidth(1f)) {
-        Text(text = "$id @$time")
+        Text(text = "$id. @ $time")
     }
 }
 @SuppressLint("SimpleDateFormat", "SuspiciousIndentation")
@@ -206,7 +205,8 @@ fun PopupAddDialogWorkout(
                     Button(
                         onClick = {
                            dbHelper.insertWorkoutData(Date.toString())
-                            dbHelper.updateData(8, (dbHelper.getDataById(8)?.toInt()!! + 1).toString())
+                            dbHelper.updateData(8, (1 + (dbHelper.getDataById(8)
+                                ?.toDouble() ?: 0.0)).toString())
                             Toast.makeText(
                                 context,
                                 dbHelper.getDataById(8).toString(),

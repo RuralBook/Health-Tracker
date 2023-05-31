@@ -189,7 +189,7 @@ class UserDataDBHelper(context: Context) :
         val values = ContentValues().apply {
             put(COLUMN_DATE, time)
         }
-        val insertedId = db.insert(TABLE_WATER_NAME, null, values)
+        val insertedId = db.insert(TABLE_WORKOUT_NAME, null, values)
         db.close()
         return insertedId
     }
@@ -199,7 +199,7 @@ class UserDataDBHelper(context: Context) :
     fun getAllWorkoutData(): List<UserWorkouts> {
         val allData = mutableListOf<UserWorkouts>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_WATER_NAME"
+        val query = "SELECT * FROM $TABLE_WORKOUT_NAME"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) as Int
