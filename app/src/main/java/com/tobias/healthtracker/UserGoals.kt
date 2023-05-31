@@ -32,3 +32,13 @@ data class UserWaterDrunken(
     var time: String,
     var liters: Double
 )
+
+data class UserWorkoutGoals(
+    var workoutGoal: Double,
+    var workoutUser: Double
+)
+
+data class UserWorkouts(
+    var id: Int,
+    var time: String,
+)

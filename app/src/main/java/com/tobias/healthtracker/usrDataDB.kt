@@ -42,6 +42,10 @@ class UserDataDBHelper(context: Context) :
 
         private const val TABLE_WATER_NAME = "water_this_day"
         private const val COLUMN_WATER = "water"
+
+        private const val TABLE_WORKOUT_NAME = "workout_this_month"
+        private const val COLUMN_WORKOUT = "workout"
+        private const val COLUMN_DATE = "date"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -64,6 +68,11 @@ class UserDataDBHelper(context: Context) :
                 "$COLUMN_DATA TEXT," +
                 "$COLUMN_WATER TEXT)"
         db.execSQL(createTableWaterQuery)
+
+        val createTableWorkoutQuery = "CREATE TABLE $TABLE_WORKOUT_NAME (" +
+                "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COLUMN_DATE TEXT)"
+        db.execSQL(createTableWorkoutQuery)
 
 
         for (i in 1..9) {
@@ -168,6 +177,35 @@ class UserDataDBHelper(context: Context) :
             val water = cursor.getDouble(cursor.getColumnIndex(COLUMN_WATER))
             val userWaterDrunken = UserWaterDrunken(data, time, water)
             allData.add(userWaterDrunken)
+        }
+        cursor.close()
+        db.close()
+        return allData
+    }
+
+
+    fun insertWorkoutData(time: String): Long {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_DATE, time)
+        }
+        val insertedId = db.insert(TABLE_WATER_NAME, null, values)
+        db.close()
+        return insertedId
+    }
+
+
+    @SuppressLint("Range")
+    fun getAllWorkoutData(): List<UserWorkouts> {
+        val allData = mutableListOf<UserWorkouts>()
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_WATER_NAME"
+        val cursor = db.rawQuery(query, null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) as Int
+            val time = cursor.getString(cursor.getColumnIndex(COLUMN_DATE)) as String
+            val userWorkouts = UserWorkouts(id,time)
+            allData.add(userWorkouts)
         }
         cursor.close()
         db.close()

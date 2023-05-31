@@ -149,13 +149,9 @@ class MainActivity : ComponentActivity() {
                             textColor = Color.White,
                             description = "Workouts",
                             onClick = {
-                                Toast.makeText(
-                                    this@MainActivity,
-                                    UserDataGoals.workoutGoal.toString() + " " + UserDataGoals.workoutUser,
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 val intent =
-                                    Intent(this@MainActivity, Camera::class.java)
+                                    Intent(this@MainActivity, WorkoutActivity::class.java)
+                                intent.putExtra("i", i)
                                 startActivity(intent)
                             })
                     }

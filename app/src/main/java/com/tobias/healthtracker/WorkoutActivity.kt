@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivityResultRegistryOwner.current
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,47 +16,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import com.tobias.healthtracker.ui.theme.HealthTrackerTheme
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
-import java.util.Locale.GERMANY
 import kotlin.properties.Delegates
 
-class WaterActivity : ComponentActivity() {
-    lateinit var UserDataGoals: UserWaterGoals
-    lateinit var AllDrunken: List<UserWaterDrunken>
-    var kalorienPercentage by Delegates.notNull<Float>()
+class WorkoutActivity : ComponentActivity() {
+    lateinit var UserDataGoals: UserWorkoutGoals
+    lateinit var AllDrunken: List<UserWorkouts>
+    var workoutPercentage by Delegates.notNull<Float>()
+    var allKal by Delegates.notNull<Double>()
 
 
     private lateinit var dbHelper: UserDataDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dbHelper = UserDataDBHelper(this@WaterActivity)
-        getWaterData()
-        Toast.makeText(this,dbHelper.getDataById(4).toString() , Toast.LENGTH_LONG).show()
+        dbHelper = UserDataDBHelper(this@WorkoutActivity)
+        getWorkoutData()
+        Toast.makeText(this,dbHelper.getDataById(8).toString() , Toast.LENGTH_LONG).show()
         setContent {
             SetupView(
             )
@@ -66,19 +56,19 @@ class WaterActivity : ComponentActivity() {
 
     }
 
-    private fun getWaterData() {
+    private fun getWorkoutData() {
         //Get Kalorien
-        UserDataGoals = UserWaterGoals(dbHelper.getDataById(3)?.toDouble() ?: 1.0, dbHelper.getDataById(4)?.toDouble() ?: 0.0)
-        kalorienPercentage = (UserDataGoals.waterUser / UserDataGoals.waterGoal).toFloat()
+        UserDataGoals = UserWorkoutGoals(dbHelper.getDataById(7)?.toDouble() ?: 1.0, dbHelper.getDataById(8)?.toDouble() ?: 0.0)
+        workoutPercentage = (UserDataGoals.workoutUser / UserDataGoals.workoutUser).toFloat()
 
         //get Food:
-        AllDrunken = dbHelper.getAllWaterData()
+        AllDrunken = dbHelper.getAllWorkoutData()
     }
 
 
     override fun onResume() {
         super.onResume()
-        getWaterData()
+        getWorkoutData()
     }
 
     @Composable
@@ -100,7 +90,7 @@ class WaterActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Wasser",
+                        text = "Workouts",
                         fontSize = 25.sp,
                     )
                 }
@@ -111,8 +101,8 @@ class WaterActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     ProgressCircle(
-                        percentage = kalorienPercentage,
-                        number = UserDataGoals.waterGoal,
+                        percentage = workoutPercentage,
+                        number = UserDataGoals.workoutGoal,
                         color = "#FF1AA7EC".color,
                         colorTrans = "#801AA7EC".color,
                         radius = 85.dp,
@@ -120,8 +110,8 @@ class WaterActivity : ComponentActivity() {
                         description = "",
                         onClick = {
                             Toast.makeText(
-                                this@WaterActivity,
-                                UserDataGoals.waterUser.toString(),
+                                this@WorkoutActivity,
+                                UserDataGoals.workoutUser.toString(),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -149,7 +139,7 @@ class WaterActivity : ComponentActivity() {
                 ){
                     // Add 5 items
                     items(AllDrunken.size) { index ->
-                        WaterItem(AllDrunken[index].name,AllDrunken[index].time ,AllDrunken[index].liters.toString())
+                        WorkoutItem(AllDrunken[index].id,AllDrunken[index].time)
                     }
 
                 }
@@ -161,19 +151,19 @@ class WaterActivity : ComponentActivity() {
                     reloadUI.value = true
                 },
                 goalId = 3,
-                context = this@WaterActivity
+                context = this@WorkoutActivity
             )
 
-            PopupAddDialogWater(
+            PopupAddDialogWorkout(
                 showAddFoodDialog = showAddFoodDialog.value,
                 onDismiss = {
                     showAddFoodDialog.value = false
                     reloadUI.value = true
                 },
-                context = this@WaterActivity,
+                context = this@WorkoutActivity,
             )
             if (reloadUI.value) {
-                getWaterData()
+                getWorkoutData()
                 reloadUI.value = false
             }
         }
@@ -183,24 +173,18 @@ class WaterActivity : ComponentActivity() {
 }
 
 @Composable
-fun WaterItem(name: String, time: String, kalorien: String) {
+fun WorkoutItem(id: Int, time: String) {
     Row(
         Modifier
             .padding(bottom = 5.dp)
             .fillMaxWidth(1f)) {
-        Text(text = "$name @$time")
-        Text(
-            text = "$kalorien L",
-            Modifier
-                .weight(1f)
-                .wrapContentWidth(align = Alignment.End)
-        )
+        Text(text = "$id @$time")
     }
 }
 @SuppressLint("SimpleDateFormat", "SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PopupAddDialogWater(
+fun PopupAddDialogWorkout(
     showAddFoodDialog: Boolean,
     onDismiss: () -> Unit,
     context: Context,
@@ -208,50 +192,24 @@ fun PopupAddDialogWater(
     val dbHelper: UserDataDBHelper = UserDataDBHelper(context)
 
     if (showAddFoodDialog) {
-        val textStateName = remember { mutableStateOf(TextFieldValue()) }
-        val textStateLiters = remember { mutableStateOf(TextFieldValue()) }
+        val Date = Date()
         AlertDialog(
             onDismissRequest = onDismiss,
             title = { Text("new drink") },
             text = {
                 Column {
-
-
-                    TextField(
-                        value = textStateName.value,
-                        onValueChange = { textStateName.value = it },
-                        placeholder = { Text("name") },
-                        //keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-
-                    TextField(
-                        value = textStateLiters.value,
-                        onValueChange = { textStateLiters.value = it },
-                        placeholder = { Text("menge (L)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
+                    Text(text = Date.toString())
                 }
             },
             confirmButton = {
                 Row() {
                     Button(
                         onClick = {
-                            val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, GERMANY)
-                            val currentTime = timeFormat.format(Date())
-
-                            if (textStateLiters.value.text != "" && textStateLiters.value.text != " " && textStateLiters.value.text != "" && textStateLiters.value.text != " ")
-                                dbHelper.insertWaterData(
-                                    textStateName.value.text,
-                                    currentTime,
-                                    (textStateLiters.value.text.toString())
-                                )
-                            dbHelper.updateData(
-                                4, (textStateLiters.value.text.toDouble() + (dbHelper.getDataById(4)
-                                    ?.toDouble() ?: 0.0)).toString()
-                            )
+                           dbHelper.insertWorkoutData(Date.toString())
+                            dbHelper.updateData(8, (dbHelper.getDataById(8)?.toInt()!! + 1).toString())
                             Toast.makeText(
                                 context,
-                                dbHelper.getDataById(4).toString(),
+                                dbHelper.getDataById(8).toString(),
                                 Toast.LENGTH_LONG
                             ).show()
                             onDismiss()
