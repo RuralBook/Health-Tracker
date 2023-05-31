@@ -1,7 +1,6 @@
-package com.tobias.healthtracker
+package com.tobias.healthtracker.gui
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -13,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import com.tobias.healthtracker.data.UserDataDBHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

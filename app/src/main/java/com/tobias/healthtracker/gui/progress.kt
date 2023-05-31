@@ -1,4 +1,4 @@
-package com.tobias.healthtracker
+package com.tobias.healthtracker.gui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

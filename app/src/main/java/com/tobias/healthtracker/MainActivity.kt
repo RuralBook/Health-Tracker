@@ -2,10 +2,8 @@ package com.tobias.healthtracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,20 +15,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tobias.healthtracker.data.UserDataDBHelper
+import com.tobias.healthtracker.data.UserGoals
+import com.tobias.healthtracker.gui.InsertName
+import com.tobias.healthtracker.gui.ProgressCircle
+import com.tobias.healthtracker.gui.color
 import com.tobias.healthtracker.ui.theme.HealthTrackerTheme
 import java.text.DateFormat
 import java.util.Date
@@ -48,10 +48,10 @@ class MainActivity : ComponentActivity() {
     private var workoutPercentage by Delegates.notNull<Float>()
 
     private lateinit var dbHelper: UserDataDBHelper
-    lateinit var lastLogin: String
+    private lateinit var lastLogin: String
     private val timeFormat: DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.GERMANY)
     private val currentDay: String = timeFormat.format(Date())
-    var checkDay by Delegates.notNull<Boolean>()
+    private var checkDay by Delegates.notNull<Boolean>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    fun getDasboardData() {
+    private fun getDasboardData() {
         //Get Water Data
         UserDataGoals.waterGoal = dbHelper.getDataById(3)?.toDouble() ?: 1.0
         UserDataGoals.waterUser = dbHelper.getDataById(4)?.toDouble() ?: 0.0
@@ -218,7 +218,7 @@ class MainActivity : ComponentActivity() {
                     onDismiss = {
                         showDialog.value = false
                         USER_NAME = dbHelper.getDataById(1).toString()
-                                },
+                    },
                     context = this@MainActivity)
             }
         }

@@ -1,4 +1,4 @@
-package com.tobias.healthtracker
+package com.tobias.healthtracker.data
 
 data class UserGoals(
     var waterGoal: Double,

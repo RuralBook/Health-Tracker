@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivityResultRegistryOwner.current
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,11 +34,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tobias.healthtracker.data.UserDataDBHelper
+import com.tobias.healthtracker.data.UserKalorienEaten
+import com.tobias.healthtracker.data.UserKalorienGoals
+import com.tobias.healthtracker.gui.PopupDialog
+import com.tobias.healthtracker.gui.ProgressCircle
+import com.tobias.healthtracker.gui.color
 import com.tobias.healthtracker.ui.theme.HealthTrackerTheme
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import java.util.Locale.GERMANY
 import kotlin.properties.Delegates
 

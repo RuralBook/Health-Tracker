@@ -1,11 +1,10 @@
-package com.tobias.healthtracker
+package com.tobias.healthtracker.data
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.sql.Time
 
 class UserDataDBHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -87,7 +86,7 @@ class UserDataDBHelper(context: Context) :
                 put(COLUMN_DATA, "15")
                 put(COLUMN_TIME, "15:30")
                 put(COLUMN_KALORIEN, "1500")
-                // Add more column-value pairs as needed
+
             }
             db.insert(TABLE_KALORIEN_NAME, null, values)
         }*/
@@ -189,7 +188,7 @@ class UserDataDBHelper(context: Context) :
         val values = ContentValues().apply {
             put(COLUMN_DATE, time)
         }
-        val insertedId = db.insert(TABLE_WATER_NAME, null, values)
+        val insertedId = db.insert(TABLE_WORKOUT_NAME, null, values)
         db.close()
         return insertedId
     }
@@ -199,7 +198,7 @@ class UserDataDBHelper(context: Context) :
     fun getAllWorkoutData(): List<UserWorkouts> {
         val allData = mutableListOf<UserWorkouts>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_WATER_NAME"
+        val query = "SELECT * FROM $TABLE_WORKOUT_NAME"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) as Int
