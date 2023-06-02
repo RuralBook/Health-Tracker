@@ -33,7 +33,7 @@ fun InsertName(
                     value = textState.value,
                     onValueChange = { textState.value = it },
                     placeholder = { Text("name") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
             },
             confirmButton = {
