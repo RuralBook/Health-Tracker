@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
         checkDay = lastLogin == currentDay
 
         //dbHelper.updateData(8, "5")
+
         USER_NAME = dbHelper.getDataById(1).toString()
         getDasboardData()
         System.gc()
